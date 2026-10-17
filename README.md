@@ -4,6 +4,10 @@ Construye un tutor academico en español. Este proyecto no pertenece al taller m
 
 Repositorio del proyecto: https://github.com/ga22038/AgenteAlexa
 
+Taller publicado: https://ga22038.github.io/AgenteAlexa/
+
+Puedes leer las practicas, usar el simulador de respuestas fijas y descargar el proyecto desde ese enlace. El sitio del taller no invoca AWS. La publicacion de este material es independiente de la certificacion y publicacion de la skill en la tienda de Alexa.
+
 Puedes obtener el codigo desde el ZIP del taller o clonarlo en una carpeta nueva:
 
 ```powershell

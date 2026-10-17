@@ -1,5 +1,9 @@
 # Taller nuevo: integra IA generativa en Alexa con AWS Lambda y Bedrock
 
+Taller en linea: https://ga22038.github.io/AgenteAlexa/
+
+El enlace publica el material y un simulador de respuestas fijas sin llamadas AWS. La skill real sigue su propio proceso de pruebas, certificacion y publicacion en Amazon.
+
 ## 1. Resultado que debes poder explicar
 
 Al finalizar, tendras una custom skill que recibe preguntas en español, consulta un modelo en Amazon Bedrock y responde por voz. Lambda coordina la solicitud; DynamoDB mantiene un historial limitado; Guardrails filtra entradas y respuestas. Cada integrante usa sus propias cuentas y recursos.
