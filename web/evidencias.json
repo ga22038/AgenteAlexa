@@ -1,6 +1,6 @@
 {
   "example_only": true,
-  "recorded_at_utc": "2026-10-17T04:22:33.794388+00:00",
+  "recorded_at_utc": "2026-10-17T04:47:24.055875+00:00",
   "local_tests": 19,
   "local_tests_passed": true,
   "stack": "Creado y codigo Lambda desplegado; hash del ZIP coincide con AWS",
@@ -49,10 +49,10 @@
     2489,
     1053
   ],
-  "alexa_simulator": "Apertura, pregunta, seguimiento, borrado y bloqueo de correo ficticio observados directamente",
+  "alexa_simulator": "Apertura, pregunta, seguimiento, borrado y bloqueo de correo ficticio observados por el operador",
   "echo": "El usuario confirmo apertura, pregunta y seguimiento; sin grabacion ni medicion de latencia fisica",
-  "echo_evidence_source": "Confirmaciones del usuario en el chat; no observacion directa del asistente",
+  "echo_evidence_source": "Declaracion manual, no verificada automaticamente",
   "certification": "Pendiente de materiales, envio y revision de Amazon",
   "published_skill": false,
-  "note": "Las cifras internas son dos muestras de Lambda del primer ensayo; no representan p95 ni latencia completa de Alexa. Los resultados pertenecen al ejemplo del autor, no al laboratorio de cada estudiante."
+  "note": "Las muestras internas, si se proporcionaron, no representan p95 ni latencia completa de Alexa. Las pruebas de simulador y Echo son declaraciones manuales. Los resultados pertenecen a este ejemplo, no al laboratorio de cada estudiante."
 }
