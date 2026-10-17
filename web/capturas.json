@@ -1,0 +1,12 @@
+[
+  {"file":"01-consola-alexa.jpg","title":"01 · Consola nueva","description":"Consola oficial de Amazon Developer antes de crear la primera skill. No se fotografió el registro personal."},
+  {"file":"02-nombre-idioma.jpg","title":"02 · Nombre e idioma","description":"Creación de Tutor Académico IA en Español (México). El nombre de invocación se configura después."},
+  {"file":"04-revision-skill-nueva.jpg","title":"03 · Proyecto independiente","description":"Revisión de Custom, backend propio y Start from Scratch. Los recursos se alojan en AWS del estudiante."},
+  {"file":"05-modelo-json.jpg","title":"04 · Modelo de voz","description":"Editor oficial con GenerativeQueryIntent, SearchQuery, frases de ejemplo y comando para borrar historial."},
+  {"file":"06-endpoint-lambda.jpg","title":"05 · Conexión con Lambda","description":"ARN real del backend de esta demostración. Cada estudiante reemplaza este valor por su propia Lambda."},
+  {"file":"07-development-sin-eventos.jpg","title":"06 · Pruebas habilitadas","description":"Modo Development habilitado. Los paneles Skill I/O y Device Display están ocultos para evitar capturar tokens y eventos privados."},
+  {"file":"08-alexa-bedrock-respuesta-real.jpg","title":"07 · Alexa responde con IA","description":"Pregunta sobre AWS Lambda y respuesta real de Bedrock dentro del simulador oficial de Alexa."},
+  {"file":"09-alexa-contexto-real.jpg","title":"08 · Conversación con contexto","description":"El seguimiento pide un ejemplo del tema anterior y Alexa responde sobre AWS Lambda y Amazon S3."},
+  {"file":"10-alexa-borra-historial.jpg","title":"09 · Borrado solicitado","description":"El comando Olvida la conversación recibe confirmación real de eliminación. La tabla también se comprobó mediante la API de DynamoDB."},
+  {"file":"11-alexa-guardrail-real.jpg","title":"10 · Guardrails en acción","description":"Una consulta con correo ficticio persona@example.com fue bloqueada dentro del flujo real Alexa, Lambda y Bedrock."}
+]

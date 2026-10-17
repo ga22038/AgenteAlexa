@@ -1,0 +1,17 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "tutor academico",
+      "intents": [
+        {"name": "GenerativeQueryIntent", "slots": [{"name": "query", "type": "AMAZON.SearchQuery"}], "samples": ["explica {query}", "pregunta {query}", "dime {query}", "consulta {query}"]},
+        {"name": "ForgetIntent", "samples": ["olvida la conversacion", "borra mi historial", "empecemos de nuevo"]},
+        {"name": "AMAZON.HelpIntent", "samples": []},
+        {"name": "AMAZON.StopIntent", "samples": []},
+        {"name": "AMAZON.CancelIntent", "samples": []},
+        {"name": "AMAZON.FallbackIntent", "samples": []},
+        {"name": "AMAZON.NavigateHomeIntent", "samples": []}
+      ],
+      "types": []
+    }
+  }
+}

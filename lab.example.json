@@ -1,0 +1,9 @@
+{
+  "student": "MI-CARNET",
+  "account_id": "TU-CUENTA-AWS-DE-12-DIGITOS",
+  "profile": "alexa-estudiante",
+  "region": "us-east-1",
+  "model_id": "amazon.nova-micro-v1:0",
+  "skill_id": "amzn1.ask.skill.REEMPLAZAR",
+  "allow_paid_plan": false
+}

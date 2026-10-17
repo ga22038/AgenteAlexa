@@ -1,0 +1,96 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Laboratorio independiente Alexa Bedrock. No cambia planes ni facturacion.",
+  "Parameters": {
+    "Student": {"Type": "String", "AllowedPattern": "[a-z0-9-]{3,24}"},
+    "SkillId": {"Type": "String", "AllowedPattern": "amzn1\\.ask\\.skill\\.[a-zA-Z0-9-]+"},
+    "ModelId": {"Type": "String", "Default": "amazon.nova-micro-v1:0", "AllowedPattern": "[a-zA-Z0-9.:-]+"},
+    "ReserveConcurrency": {"Type": "String", "Default": "false", "AllowedValues": ["true", "false"]}
+  },
+  "Conditions": {"CanReserveConcurrency": {"Fn::Equals": [{"Ref": "ReserveConcurrency"}, "true"]}},
+  "Resources": {
+    "History": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "BillingMode": "PROVISIONED",
+        "ProvisionedThroughput": {"ReadCapacityUnits": 1, "WriteCapacityUnits": 1},
+        "AttributeDefinitions": [{"AttributeName": "pk", "AttributeType": "S"}],
+        "KeySchema": [{"AttributeName": "pk", "KeyType": "HASH"}],
+        "TimeToLiveSpecification": {"AttributeName": "expires", "Enabled": true},
+        "SSESpecification": {"SSEEnabled": true},
+        "Tags": [{"Key": "Project", "Value": "alexa-bedrock-lab"}, {"Key": "Student", "Value": {"Ref": "Student"}}]
+      }
+    },
+    "Safety": {
+      "Type": "AWS::Bedrock::Guardrail",
+      "Properties": {
+        "Name": {"Fn::Sub": "alexa-${Student}"},
+        "Description": "Filtros educativos y datos sensibles para la practica de voz",
+        "BlockedInputMessaging": "No puedo procesar esa consulta. Usa una pregunta academica sin datos personales.",
+        "BlockedOutputsMessaging": "No puedo entregar esa respuesta. Probemos con otro tema academico.",
+        "ContentPolicyConfig": {"FiltersConfig": [
+          {"Type": "HATE", "InputStrength": "HIGH", "OutputStrength": "HIGH"},
+          {"Type": "VIOLENCE", "InputStrength": "HIGH", "OutputStrength": "HIGH"},
+          {"Type": "SEXUAL", "InputStrength": "HIGH", "OutputStrength": "HIGH"}
+        ]},
+        "SensitiveInformationPolicyConfig": {"PiiEntitiesConfig": [
+          {"Type": "EMAIL", "Action": "BLOCK"},
+          {"Type": "PHONE", "Action": "BLOCK"},
+          {"Type": "CREDIT_DEBIT_CARD_NUMBER", "Action": "BLOCK"}
+        ]},
+        "Tags": [{"Key": "Project", "Value": "alexa-bedrock-lab"}, {"Key": "Student", "Value": {"Ref": "Student"}}]
+      }
+    },
+    "SafetyVersion": {
+      "Type": "AWS::Bedrock::GuardrailVersion",
+      "Properties": {"GuardrailIdentifier": {"Ref": "Safety"}, "Description": "Version inicial del laboratorio"}
+    },
+    "ExecutionRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {"Version": "2012-10-17", "Statement": [{"Effect": "Allow", "Principal": {"Service": "lambda.amazonaws.com"}, "Action": "sts:AssumeRole"}]},
+        "Policies": [{"PolicyName": "TutorLeastPrivilege", "PolicyDocument": {"Version": "2012-10-17", "Statement": [
+          {"Effect": "Allow", "Action": "bedrock:InvokeModel", "Resource": {"Fn::Sub": "arn:${AWS::Partition}:bedrock:${AWS::Region}::foundation-model/${ModelId}"}},
+          {"Effect": "Allow", "Action": "bedrock:ApplyGuardrail", "Resource": {"Fn::GetAtt": ["Safety", "GuardrailArn"]}},
+          {"Effect": "Allow", "Action": ["dynamodb:GetItem", "dynamodb:PutItem", "dynamodb:UpdateItem", "dynamodb:DeleteItem"], "Resource": {"Fn::GetAtt": ["History", "Arn"]}},
+          {"Effect": "Allow", "Action": ["logs:CreateLogStream", "logs:PutLogEvents"], "Resource": {"Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/alexa-${Student}:*"}}
+        ]}}]
+      }
+    },
+    "Logs": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {"LogGroupName": {"Fn::Sub": "/aws/lambda/alexa-${Student}"}, "RetentionInDays": 7}
+    },
+    "Function": {
+      "Type": "AWS::Lambda::Function",
+      "DependsOn": "Logs",
+      "Properties": {
+        "FunctionName": {"Fn::Sub": "alexa-${Student}"},
+        "Runtime": "python3.12",
+        "Handler": "lambda_function.handler",
+        "Role": {"Fn::GetAtt": ["ExecutionRole", "Arn"]},
+        "MemorySize": 256,
+        "Timeout": 7,
+        "ReservedConcurrentExecutions": {"Fn::If": ["CanReserveConcurrency", 2, {"Ref": "AWS::NoValue"}]},
+        "Code": {"ZipFile": "def handler(event, context):\n    raise RuntimeError('Sube el paquete con python lab.py deploy antes de probar')\n"},
+        "Environment": {"Variables": {
+          "SKILL_ID": {"Ref": "SkillId"}, "BEDROCK_REGION": {"Ref": "AWS::Region"}, "MODEL_ID": {"Ref": "ModelId"},
+          "HISTORY_TABLE": {"Ref": "History"}, "GUARDRAIL_ID": {"Ref": "Safety"}, "GUARDRAIL_VERSION": {"Fn::GetAtt": ["SafetyVersion", "Version"]}
+        }},
+        "Tags": [{"Key": "Project", "Value": "alexa-bedrock-lab"}, {"Key": "Student", "Value": {"Ref": "Student"}}]
+      }
+    },
+    "AlexaPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {"FunctionName": {"Ref": "Function"}, "Action": "lambda:InvokeFunction", "Principal": "alexa-appkit.amazon.com", "EventSourceToken": {"Ref": "SkillId"}}
+    }
+  },
+  "Outputs": {
+    "FunctionArn": {"Value": {"Fn::GetAtt": ["Function", "Arn"]}},
+    "FunctionName": {"Value": {"Ref": "Function"}},
+    "HistoryTable": {"Value": {"Ref": "History"}},
+    "GuardrailId": {"Value": {"Ref": "Safety"}},
+    "GuardrailVersion": {"Value": {"Fn::GetAtt": ["SafetyVersion", "Version"]}},
+    "LogGroup": {"Value": {"Ref": "Logs"}}
+  }
+}
